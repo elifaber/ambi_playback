@@ -23,7 +23,7 @@ Demonstrated with a stem-separated mix of *Lose Yourself to Dance* by Daft Punk.
 ### Files
 | File | Description |
 |------|-------------|
-| `synth_L.mat` … `synth_RR.mat`, `ohFL.mat` … `ohRR.mat` | Virtual loudspeaker HRTFs (11 total) |
+| `synth_L.mat` … `synth_RR.mat`, `ohFL.mat` … `ohRR.mat` | Virtual loudspeaker (Ambisonic Representation) |
 | `HATS051123_1_processed.sofa` | SOFA HRTF dataset for binaural decoding |
 | `head_track/` | Folder containing head tracking helpers |
 | `Lose Yourself To Dance/1.wav` … `12.wav` | Stem audio files (mono or stereo WAV) |
