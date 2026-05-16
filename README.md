@@ -86,3 +86,4 @@ startTimeSec = 105;
 - The IMU is read once per `samples_per_update` (8192 samples) rather than every chunk, which reduces serial overhead while keeping orientation updates timely.
 - Filter levels are scaled by `/1000` after loading; adjust this if your HRTF files are at a different gain.
 - All filter objects are warmed up with a zero buffer before the main loop to avoid startup transients.
+- The provided virtual loudspeakers are synthesized using the image source method
