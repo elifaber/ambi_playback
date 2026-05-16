@@ -1,20 +1,8 @@
 # Head-Tracked Binaural HOA Renderer
 
-A real-time Higher-Order Ambisonics (HOA) binaural renderer in MATLAB with head tracking via an MPU-9250 IMU on an Arduino Nano. Audio is decoded through personalized HRTFs and rendered to headphones with dynamic orientation compensation.
+A real-time Higher-Order Ambisonics (HOA) binaural renderer in MATLAB with head tracking via an MPU-9250 IMU on an Arduino Nano. Audio is decoded through HRTFs and rendered to headphones with dynamic orientation compensation.
 
 Demonstrated with a stem-separated mix of *Lose Yourself to Dance* by Daft Punk.
-
----
-
-## Features
-
-- **Real-time HOA binaural rendering** at 4th order (25 channels) using a virtual loudspeaker decoder and HRTF convolution
-- **Head tracking** via MPU-9250 IMU over Arduino, with automatic gyro bias calibration on startup
-- **Auto-recenter** — after the head is still for 3 seconds, the reference orientation glides smoothly back to center
-- **Manual recenter** button in the GUI
-- **Stereo bypass** mode for A/B comparison
-- **Per-speaker mute toggles** for all 11 virtual loudspeakers (L, R, C, SL, SR, RL, RR, ohFL, ohFR, ohRL, ohRR)
-- **SOFA HRTF support** via `interpolateHRTF` with VBAP interpolation
 
 ---
 
@@ -30,30 +18,15 @@ Demonstrated with a stem-separated mix of *Lose Yourself to Dance* by Daft Punk.
 - DSP System Toolbox
 - Sensor Fusion and Tracking Toolbox
 - MATLAB Support Package for Arduino Hardware
+- Higher-Order-Ambisonics by Polarch
 
 ### Files
 | File | Description |
 |------|-------------|
 | `synth_L.mat` … `synth_RR.mat`, `ohFL.mat` … `ohRR.mat` | Virtual loudspeaker HRTFs (11 total) |
 | `HATS051123_1_processed.sofa` | SOFA HRTF dataset for binaural decoding |
-| `head_track/` | Folder containing `rotateHOA_N3D.m` and other head tracking helpers |
+| `head_track/` | Folder containing head tracking helpers |
 | `Lose Yourself To Dance/1.wav` … `12.wav` | Stem audio files (mono or stereo WAV) |
-
-The expected stem layout is:
-
-| File | Channel |
-|------|---------|
-| 1.wav | Left |
-| 2.wav | Right |
-| 3.wav + 4.wav | Centre (summed) |
-| 5.wav | Side Left |
-| 6.wav | Side Right |
-| 7.wav | Rear Left |
-| 8.wav | Rear Right |
-| 9.wav | Overhead Front Left |
-| 10.wav | Overhead Front Right |
-| 11.wav | Overhead Rear Left |
-| 12.wav | Overhead Rear Right |
 
 ---
 
@@ -95,32 +68,6 @@ startTimeSec = 105;
 
 ---
 
-## Signal Chain
-
-```
-Stems (11 channels)
-      │
-      ▼
-Virtual loudspeaker HRTFs        ← synth_*.mat  (FD-FIR convolution)
-      │
-      ▼
-4th-order N3D/ACN Ambisonic bus  (25 channels)
-      │
-      ▼
-HOA rotation                     ← rotateHOA_N3D (yaw / pitch / roll from IMU)
-      │
-      ▼
-Ambisonic decoder matrix         ← t-design 36-point virtual array
-      │
-      ▼
-HRTF convolution (MIMO FIR)      ← SOFA dataset, VBAP-interpolated
-      │
-      ▼
-Stereo headphone output
-```
-
----
-
 ## Configuration
 
 | Parameter | Location | Default | Description |
@@ -137,6 +84,5 @@ Stereo headphone output
 ## Notes
 
 - The IMU is read once per `samples_per_update` (8192 samples) rather than every chunk, which reduces serial overhead while keeping orientation updates timely.
-- HRTF filters are windowed with a half-Hann fade (`applyHalfHann`) and truncated to 8192 taps.
 - Filter levels are scaled by `/1000` after loading; adjust this if your HRTF files are at a different gain.
 - All filter objects are warmed up with a zero buffer before the main loop to avoid startup transients.
